@@ -21,16 +21,16 @@ class Self_Attentnion_v3(nn.Module):
         q, k, v = torch.split(qkv, self.hidden_dim, dim=-1)
         attention_value = torch.matmul(q, k.transpose(-2, -1))
         attention_weight = attention_value / math.sqrt(self.hidden_dim)
-        print("attention mask:", attention_weight)
-        # 针对最后一个维度softmax
+        # print("attention mask:", attention_weight)
+        
         if attention_mask is not None:
             attention_weight = attention_weight.masked_fill(attention_mask == 0, float("-1e20"))
-            print("attention weight:", attention_weight)
+            # print("attention weight:", attention_weight)
         attention_weight = torch.softmax(attention_weight, dim=-1)
         attention_weight = self.attention_dropout(attention_weight)
         output = torch.matmul(attention_weight, v)
         output = self.output_proj(output)
-        print("output:", output)
+        # print("output:", output)
         return output
         
 X = torch.rand(3, 4, 2)
@@ -38,8 +38,8 @@ mask = torch.tensor(
     [[1, 1, 1, 0],
     [1, 1, 0, 0],
     [1, 0, 0, 0]])
-print("shape of mask:", mask.shape)
+# print("shape of mask:", mask.shape)
 mask = torch.unsqueeze(mask, dim=1).repeat(1, 4, 1)
-print("shape of repeated mask:", mask.shape)
+# print("shape of repeated mask:", mask.shape)
 att = Self_Attentnion_v3(X.shape[2])
 att(X, mask)
