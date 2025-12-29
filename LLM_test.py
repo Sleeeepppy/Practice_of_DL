@@ -9,7 +9,7 @@ model = AutoModelForCausalLM.from_pretrained(
 
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
 
-prompt = "Writting a sentence to discribe yourself.<|im_start|>assistant"
+prompt = "Write a sentence to discribe yourself.<|im_start|>assistant"
 # input prompt to tokenizer
 input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to("cuda")
 # generate the text
