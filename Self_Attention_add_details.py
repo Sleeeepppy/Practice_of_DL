@@ -2,7 +2,6 @@
 # add some details: dropout, attention mask and output matrix
 
 import math
-from turtle import forward
 import torch
 import torch.nn as nn
 
@@ -20,8 +19,9 @@ class Self_Attentnion_v3(nn.Module):
         qkv = self.qkv_proj(X)
         q, k, v = torch.split(qkv, self.hidden_dim, dim=-1)
         attention_value = torch.matmul(q, k.transpose(-2, -1))
+        print("attention value size:", attention_value.shape)
         attention_weight = attention_value / math.sqrt(self.hidden_dim)
-        # print("attention mask:", attention_weight)
+        print("attention weight size:", attention_weight.shape)
         
         if attention_mask is not None:
             attention_weight = attention_weight.masked_fill(attention_mask == 0, float("-1e20"))
@@ -30,7 +30,7 @@ class Self_Attentnion_v3(nn.Module):
         attention_weight = self.attention_dropout(attention_weight)
         output = torch.matmul(attention_weight, v)
         output = self.output_proj(output)
-        # print("output:", output)
+        print("output size:", output.shape)
         return output
         
 X = torch.rand(3, 4, 2)
@@ -38,8 +38,8 @@ mask = torch.tensor(
     [[1, 1, 1, 0],
     [1, 1, 0, 0],
     [1, 0, 0, 0]])
-# print("shape of mask:", mask.shape)
+print("shape of mask:", mask.shape)
 mask = torch.unsqueeze(mask, dim=1).repeat(1, 4, 1)
-# print("shape of repeated mask:", mask.shape)
+print("shape of repeated mask:", mask.shape)
 att = Self_Attentnion_v3(X.shape[2])
 att(X, mask)
